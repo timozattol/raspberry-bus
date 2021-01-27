@@ -1,0 +1,17 @@
+# Select a LCD digit
+digit_selection:
+  - 14
+  - 15
+  - 18
+  - 23
+# Each bar in the display
+bars:
+  - 24
+  - 25
+  - 8
+  - 7
+  - 1
+  - 12
+  - 16
+dot:
+  20
