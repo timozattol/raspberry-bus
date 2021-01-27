@@ -37,27 +37,36 @@ digit_to_bar_matrix = [
 class FourDigitsLCDController:
     def __init__(self):
         with open(GPIO_YAML, "r") as f:
-            self.gio_config = yaml.load(f, Loader=yaml.Loader)
+            self.gpio_config = yaml.load(f, Loader=yaml.Loader)
             self.digits = [Digit(0, False)] * 4
+
+        self.initialize_gpio()
+
+    def initialize_gpio(self):
+        # Use BCM GPIO referencing
+        GPIO.setmode(GPIO.BCM)
+
+        for pin in self.gpio_config["digit_selection"] + self.gpio_config["bars"] + [self.gpio_config["dot"]]:
+            GPIO.setup(pin, GPIO.OUT)
 
     def activate_digit_index(self, digit_index):
         # The selected digit is indicated with a low signal (0)
         selection_mask = [1, 1, 1, 1]
         selection_mask[digit_index] = 0
 
-        GPIO.output(self.gio_config["digit_selection"], selection_mask)
+        GPIO.output(self.gpio_config["digit_selection"], selection_mask)
 
     def display_black_digit(self):
-        GPIO.output(self.gio_config["bars"], 0)
+        GPIO.output(self.gpio_config["bars"], 0)
 
     def display_digit(self, digit: int):
-        GPIO.output(self.gio_config["bars"], digit_to_bar_matrix[digit])
+        GPIO.output(self.gpio_config["bars"], digit_to_bar_matrix[digit])
 
     def display_dot(self):
-        GPIO.output(self.gio_config["dot"], 1)
+        GPIO.output(self.gpio_config["dot"], 1)
 
     def display_black_dot(self):
-        GPIO.output(self.gio_config["dot"], 0)
+        GPIO.output(self.gpio_config["dot"], 0)
 
     def update_display(self):
         for digit_index, digit in enumerate(self.digits):
