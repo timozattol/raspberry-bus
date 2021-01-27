@@ -82,6 +82,8 @@ class FourDigitsLCDController:
             else:
                 self.display_black_dot()
 
+            time.sleep(SLEEP_TIME)
+
     @staticmethod
     def exit():
         GPIO.cleanup()
@@ -93,7 +95,6 @@ def main():
     try:
         while True:
             controller.update_display()
-            time.sleep(SLEEP_TIME)
     except KeyboardInterrupt:
         print("Cleaning up and exiting")
         controller.exit()
