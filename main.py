@@ -79,8 +79,8 @@ class DisplayThread:
                     raise ValueError(f"Failed parsing minutes into digits. Minutes left: {minutes_left}")
 
                 digits = (
-                    Digit(digit=minutes_str[0], contains_dot=False),
-                    Digit(digit=minutes_str[1], contains_dot=False),
+                    Digit(digit=int(minutes_str[0]), contains_dot=False),
+                    Digit(digit=int(minutes_str[1]), contains_dot=False),
                 )
 
         return digits
