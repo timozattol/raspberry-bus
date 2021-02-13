@@ -1,7 +1,7 @@
 # Adapted from https://peppe8o.com/how-to-control-a-4-digit-7-segment-display-from-raspberry-pi-with-python/
 
 import time
-from typing import Optional
+from typing import Optional, Tuple
 
 import RPi.GPIO as GPIO
 import attr
@@ -38,7 +38,7 @@ class FourDigitsLCDController:
     def __init__(self):
         with open(GPIO_YAML, "r") as f:
             self.gpio_config = yaml.load(f, Loader=yaml.Loader)
-            self.digits = [Digit(0, False)] * 4
+            self.digits = tuple([Digit(0, False)] * 4)
 
         self.initialize_gpio()
 
@@ -87,6 +87,9 @@ class FourDigitsLCDController:
     @staticmethod
     def exit():
         GPIO.cleanup()
+
+    def set_digits(self, digits: Tuple[Digit, Digit, Digit, Digit]):
+        self.digits = digits
 
 
 def main():

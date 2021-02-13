@@ -5,6 +5,7 @@ from threading import Thread
 from typing import Optional, Tuple
 
 import attr
+import pytz
 
 from bus import get_next_transports, Transport
 # How much time to wait between each request to the transport API
@@ -57,19 +58,26 @@ class DisplayThread:
 
     @staticmethod
     def transport_to_digits(transport: Optional[Transport]) -> Tuple[Digit, Digit]:
-        now = datetime.now()
+        now = datetime.now(pytz.utc)
 
         digits = (Digit(digit=None, contains_dot=True), Digit(digit=None, contains_dot=True))
 
         if transport:
-            a_departs_in = (now - transport.departure_dt)
+            transport_departs_in = (transport.departure_dt - now)
 
-            hours_left = a_departs_in.seconds // 3600
-            minutes_left = (a_departs_in.seconds // 60) % 60
+            hours_left = transport_departs_in.seconds // 3600
+            minutes_left = (transport_departs_in.seconds // 60) % 60
+
+            print(transport_departs_in)
+            print(hours_left, minutes_left)
 
             # If departure is in more than an hour, don't display minutes left
             if hours_left == 0:
-                minutes_str = str(minutes_left)
+                minutes_str = "{:02d}".format(minutes_left)
+
+                if len(minutes_str) != 2:
+                    raise ValueError(f"Failed parsing minutes into digits. Minutes left: {minutes_left}")
+
                 digits = (
                     Digit(digit=minutes_str[0], contains_dot=False),
                     Digit(digit=minutes_str[1], contains_dot=False),
